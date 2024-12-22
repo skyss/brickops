@@ -24,3 +24,10 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = "tests"
 pythonpath = "."
+
+
+[tool.ruff.lint.per-file-ignores]
+"./deploy/**.py" = [
+    "INP001", # Not a package
+    "F821",   # Do not care about undefined variables in notebooks as many are only available when running in databricks.
+]
