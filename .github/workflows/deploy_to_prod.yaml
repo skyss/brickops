@@ -1,0 +1,42 @@
+name: "Update repo and (re-)deploy all datamesh jobs"
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  deploy:
+    name: "Update dp-notebooks repo in databricks"
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Databricks CLI
+        uses: databricks/setup-cli@main
+
+      - name: Deploy bundle
+        run: databricks repos update /Repos/Production/dp-notebooks --branch main
+        env:
+          DATABRICKS_TOKEN: ${{ secrets.DB_SP_TOKEN_PROD }}
+          DATABRICKS_HOST: ${{secrets.DATABRICKS_HOST_PROD}}
+
+  run:
+    name: "Run one time job to update all jobs in datamesh"
+    runs-on: self-hosted
+    needs:
+      - deploy
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Databricks CLI
+        uses: databricks/setup-cli@main
+
+      - name: Run bundle
+        run: databricks jobs submit --json @deploy/deploy_job.json
+        working-directory: .
+        env:
+          DATABRICKS_TOKEN: ${{ secrets.DB_SP_TOKEN_PROD }}
+          DATABRICKS_HOST: ${{secrets.DATABRICKS_HOST_PROD}}
