@@ -1,3 +1,4 @@
+[![Code checks and tests](https://github.com/paalvibe/bricksops/actions/workflows/check-and-test.yaml/badge.svg)](https://github.com/paalvibe/bricksops/actions/workflows/check-and-test.yaml)
 # bricksops
 DataOps framework for Databricks
 
