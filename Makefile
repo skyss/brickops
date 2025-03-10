@@ -9,3 +9,9 @@ build-package:
 	@echo "$(COLOUR_GREEN)Building package ... $(END_COLOUR)"
 	@uv build
 	@echo "$(COLOUR_GREEN)Finished building package... $(END_COLOUR)"
+
+# Note that this target uses the Trusted Publishers feature of PyPi and Gitub Actions. See https://docs.pypi.org/trusted-publishers/adding-a-publisher/
+publish-package:
+	@echo "$(COLOUR_GREEN)Publishing package... $(END_COLOUR)"
+	@uv publish
+	@echo "$(COLOUR_GREEN)Finished publishing package... $(END_COLOUR)"
