@@ -24,7 +24,7 @@ jobs:
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Install build dependencies
-        run: uv pip install twine
+        run: uv pip install --system twine
 
       - name: Build package
         run: uv build
