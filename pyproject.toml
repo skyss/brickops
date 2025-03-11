@@ -33,6 +33,21 @@ pythonpath = "."
     "F821",   # Do not care about undefined variables in notebooks as many are only available when running in databricks.
 ]
 
+"./tools/**.py" = [
+    "F821",    # Do not care about undefined variables in notebooks as many are only available when running in databricks.
+    "ANN001",  # We are ok without type annotations in notebooks.
+    "ANN201",  # Do not need return type annotations in notebooks.
+    "ANN202",  # Do not need return type annotations in notebooks.
+    "D103",    # Don't care about docstring in notebooks.
+    "INP001",  # we do not care about implicit packages
+    "D100",    # Don't care about docstring in notebooks.
+    "FBT003",  # Don't care about booleans as positional arguments in notebooks
+    "ERA001",  # False positive on MD cells in notebooks
+    "B018",    # Notebooks can have last line as an "unused" object in order to display it
+    "E501",    # Noteboks often have long lines
+    "PLR2004", # Magic values are ok in notebooks
+] # Most of the code will be in notebooks, and tooling support will vary. Impractical to enforce strict rules.
+
 [tool.mypy]
 disallow_untyped_defs = true
 exclude = ["tools"]
