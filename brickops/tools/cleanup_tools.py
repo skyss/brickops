@@ -1,9 +1,9 @@
 import logging
 from typing import NamedTuple
 
-from src.databricks.api import ApiClient
-from src.databricks.context import get_context
-from src.databricks.username import get_username
+from brickops.databricks.api import ApiClient
+from brickops.databricks.context import get_context
+from brickops.databricks.username import get_username
 
 
 class Job(NamedTuple):

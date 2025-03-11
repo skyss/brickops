@@ -1,7 +1,7 @@
 import pytest
 
-from src.databricks.context import DbContext
-from src.datamesh.naming import (
+from brickops.databricks.context import DbContext
+from brickops.datamesh.naming import (
     build_table_name,
     dbname,
     extract_catname_from_path,

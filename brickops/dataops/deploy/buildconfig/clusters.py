@@ -1,9 +1,9 @@
 import logging
 from typing import Any
 
-from src.databricks import api
-from src.databricks.context import DbContext
-from src.dataops.deploy.buildconfig.job_config import JobConfig
+from brickops.databricks import api
+from brickops.databricks.context import DbContext
+from brickops.dataops.deploy.buildconfig.job_config import JobConfig
 
 
 def add_clusters(job_config: JobConfig, used_clusters: dict[str, Any]) -> JobConfig:

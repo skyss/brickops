@@ -4,14 +4,14 @@ import json
 import logging
 from typing import TYPE_CHECKING, Any
 
-from src.databricks import api
-from src.databricks.context import DbContext, current_env, get_context
-from src.dataops.deploy.buildconfig import build_job_config
-from src.dataops.deploy.readconfig import read_config_yaml
-from src.dataops.deploy.repo import git_source
+from brickops.databricks import api
+from brickops.databricks.context import DbContext, current_env, get_context
+from brickops.dataops.deploy.buildconfig import build_job_config
+from brickops.dataops.deploy.readconfig import read_config_yaml
+from brickops.dataops.deploy.repo import git_source
 
 if TYPE_CHECKING:
-    from src.dataops.deploy.buildconfig.job_config import JobConfig
+    from brickops.dataops.deploy.buildconfig.job_config import JobConfig
 
 
 def autojob(

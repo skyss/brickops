@@ -4,13 +4,13 @@ import logging
 import re
 from typing import TYPE_CHECKING, Any
 
-from src.databricks.context import current_env, get_context
-from src.databricks.username import get_username
-from src.dataops.deploy.repo import git_source
-from src.gitutils import clean_branch, commit_shortref
+from brickops.databricks.context import current_env, get_context
+from brickops.databricks.username import get_username
+from brickops.dataops.deploy.repo import git_source
+from brickops.gitutils import clean_branch, commit_shortref
 
 if TYPE_CHECKING:
-    from src.databricks.context import DbContext
+    from brickops.databricks.context import DbContext
 
 
 def escape_sql_name(name: str) -> str:

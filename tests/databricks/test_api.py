@@ -3,7 +3,7 @@ from typing import Any
 import pytest
 import requests
 
-from src.databricks.api import ApiClient, ApiClientError
+from brickops.databricks.api import ApiClient, ApiClientError
 
 
 def test_get_jobs_with_no_results(requests_mock: Any) -> None:  # noqa: ANN401

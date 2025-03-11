@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.databricks.context import DbContext
+    from brickops.databricks.context import DbContext
 
 
 def nbrelpath(db_context: DbContext) -> Path:

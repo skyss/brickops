@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from src.databricks.api import ApiClient
-from src.databricks.context import DbContext, get_context
+from brickops.databricks.api import ApiClient
+from brickops.databricks.context import DbContext, get_context
 
 if TYPE_CHECKING:
     from databricks.sdk.runtime.dbutils_stub import dbutils as dbutils_type

@@ -3,10 +3,10 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING, Any
 
-from src.databricks import api
+from brickops.databricks import api
 
 if TYPE_CHECKING:
-    from src.databricks.context import DbContext
+    from brickops.databricks.context import DbContext
 
 
 def git_source(db_context: DbContext) -> dict[str, Any]:

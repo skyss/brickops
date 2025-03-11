@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pytest
 
-from src.databricks.context import DbContext
-from src.dataops.deploy.nbpath import nbrelfolder
+from brickops.databricks.context import DbContext
+from brickops.dataops.deploy.nbpath import nbrelfolder
 
 
 @pytest.fixture
