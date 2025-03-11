@@ -1,12 +1,12 @@
 import logging
 from typing import Any
 
-from src.databricks.context import DbContext
-from src.databricks.username import get_username
-from src.datamesh.naming import parse_path
-from src.dataops.deploy.buildconfig.enrichtasks import enrich_tasks
-from src.dataops.deploy.buildconfig.job_config import JobConfig, defaultconfig
-from src.gitutils import clean_branch, commit_shortref
+from brickops.databricks.context import DbContext
+from brickops.databricks.username import get_username
+from brickops.datamesh.naming import parse_path
+from brickops.dataops.deploy.buildconfig.enrichtasks import enrich_tasks
+from brickops.dataops.deploy.buildconfig.job_config import JobConfig, defaultconfig
+from brickops.gitutils import clean_branch, commit_shortref
 
 
 def depname(*, db_context: DbContext, env: str, git_src: dict[str, Any]) -> str:

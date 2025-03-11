@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.databricks.context import DbContext
+    from brickops.databricks.context import DbContext
 
 
 def get_username(db_context: DbContext) -> str:

@@ -2,10 +2,10 @@ from typing import Any
 
 import pytest
 
-from src.databricks.context import DbContext
-from src.dataops.deploy.buildconfig.build import build_job_config
-from src.dataops.deploy.buildconfig.job_config import JobConfig, defaultconfig
-from src.dataops.deploy.readconfig import read_config_yaml
+from brickops.databricks.context import DbContext
+from brickops.dataops.deploy.buildconfig.build import build_job_config
+from brickops.dataops.deploy.buildconfig.job_config import JobConfig, defaultconfig
+from brickops.dataops.deploy.readconfig import read_config_yaml
 
 
 @pytest.fixture

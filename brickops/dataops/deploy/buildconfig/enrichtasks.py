@@ -1,9 +1,9 @@
 from pathlib import Path
 
-from src.databricks.context import DbContext
-from src.dataops.deploy.buildconfig.clusters import add_clusters, lookup_cluster_id
-from src.dataops.deploy.buildconfig.job_config import JobConfig
-from src.dataops.deploy.nbpath import nbrelfolder
+from brickops.databricks.context import DbContext
+from brickops.dataops.deploy.buildconfig.clusters import add_clusters, lookup_cluster_id
+from brickops.dataops.deploy.buildconfig.job_config import JobConfig
+from brickops.dataops.deploy.nbpath import nbrelfolder
 
 
 def enrich_tasks(job_config: JobConfig, db_context: DbContext) -> JobConfig:
