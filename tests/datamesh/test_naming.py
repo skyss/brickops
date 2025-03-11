@@ -58,6 +58,7 @@ def test_parse_path_supports_explore_folders() -> None:
     assert parse_path(
         "/domains/sanntid/projects/test_project/explore/exploration/a_notebook"
     ) == (
+        None,
         "sanntid",
         "test_project",
         "exploration",

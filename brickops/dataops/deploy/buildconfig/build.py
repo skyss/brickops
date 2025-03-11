@@ -3,7 +3,7 @@ from typing import Any
 
 from brickops.databricks.context import DbContext
 from brickops.databricks.username import get_username
-from brickops.datamesh.naming import parse_path
+from brickops.datamesh.naming import parse_path, full_mesh_env
 from brickops.dataops.deploy.buildconfig.enrichtasks import enrich_tasks
 from brickops.dataops.deploy.buildconfig.job_config import JobConfig, defaultconfig
 from brickops.gitutils import clean_branch, commit_shortref
@@ -27,7 +27,16 @@ def jobname(db_context: DbContext, depname: str) -> str:
         msg = f"Could not parse path {_nbpath}"
         raise RuntimeError(msg)
 
-    domain, project, flow = ret
+    org, domain, project, flow = ret
+
+    if full_mesh_env():
+        logging.info(
+            f"""
+            ## Pipeline ##
+            
+            org: {org}, domain: {domain}, project: {project}, flow (pipeline): {flow}"""
+        )
+        return f"{org}_{domain}_{project}_{flow}_{depname}"
 
     logging.info(
         f"""
