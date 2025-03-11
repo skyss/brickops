@@ -1,28 +1,15 @@
 from __future__ import annotations
 
-import logging
-import os
-import re
-from dataclasses import dataclass
-from typing import Optional, TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any
 
 from brickops.databricks.context import current_env, get_context
 from brickops.databricks.username import get_username
 from brickops.dataops.deploy.repo import git_source
 from brickops.gitutils import clean_branch, commit_shortref
-
+from brickops.datamesh.parsepath import extract_catname_from_path
 
 if TYPE_CHECKING:
     from brickops.databricks.context import DbContext
-
-
-@dataclass
-class ParsedPath:
-    org: Optional[str] = None
-    domain: str
-    project: str
-    flow: str
-    flow_type: str
 
 
 def escape_sql_name(name: str) -> str:
@@ -108,77 +95,21 @@ def _git_src_from_widget_params(db_context: DbContext) -> dict[str, Any]:
     return {k: v for k, v in widget_data.items() if v is not None}
 
 
-def parse_path(path: str) -> ParsedPath | None:
-    """Parse path to extract org, domain, project, and flow."""
-
-    if full_mesh_env():  # Include org section if full mesh
-        rexp = r".*\/org/([^/]+)\/domains/([^/]+)\/projects\/([^/]+)\/(?:flows|explore)\/([^/]+)\/.+"
-    else:
-        rexp = r".*\/domains/([^/]+)\/projects\/([^/]+)\/(?:flows|explore)\/([^/]+)\/.+"
-    re_ret = re.search(
-        rexp,
-        path,
-        re.IGNORECASE,
-    )
-    if re_ret is None:
-        return None
-
-
-    if full_mesh_env():  # Include org section if full mesh
-        if len(re_ret.groups()) < 5:  # noqa: PLR2004
-            logging.warning(
-                """parse_path: unexpected number of groups for full mesh.
-                Is the notebook in the correct folder!?"""
-            )
-            return None
-        return ParsedPath(
-            org=re_ret[0],
-            domain=re_ret[1],
-            project=re_ret[2],
-            flowtype=re_ret[3],
-            flow=re_ret[4],
-        )
-    if len(re_ret.groups()) < 4:  # noqa: PLR2004
-        logging.warning(
-            """parse_path: unexpected number of groups.
-            Is the notebook in the correct folder!?"""
-        )
-        return None
-    return ParsedPath(
-        domain=re_ret[0],
-        project=re_ret[1],
-        flowtype=re_ret[2],
-        flow=re_ret[3],
-    )
-
-
-def extract_catname_from_path(path: str) -> str:
-    """Derive catalog name from repo data mesh structure.
-
-    We simply use domain as base catalog name.
-    """
-    if result := parse_path(path):
-        org, domain, proj, _ = result
-        if full_mesh_env():
-            return f"{org}_{domain}_{proj}"
-        else:
-            return domain
-    return ""
-
-
 def catname_from_path() -> str:
     """Derive catalog name from repo data mesh structure.
 
     We simply use domain as base catalog name.
 
+    By default we simply use domain as base catalog name.
+    If an env var BRICKOPS_MESH_LEVELS is defined, then the catalog name
+    is composed according to the elements, e.g. f"{org}_{domain}_{project}"
+
     Example path:
     .../domains/transport/projects/taxinyc/flows/prep/revenue/revenue
+
+    With org:
+    .../org/acme/domains/transport/projects/taxinyc/flows/prep/revenue/revenue
     """
     db_context = get_context()
     nb_path = db_context.notebook_path
     return escape_sql_name(extract_catname_from_path(nb_path))
-
-
-def full_mesh_env():
-    """Return True if BRICKOPS_FULL_MESH is set to True."""
-    return os.environ.get("BRICKOPS_FULL_MESH", False)
