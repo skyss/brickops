@@ -18,3 +18,10 @@ You can now run the tests with
 ```shell
 uv run pytest
 ```
+
+## How to get into devcontainer
+
+```
+make start-devcontainer
+make devcontainer-shell
+```
