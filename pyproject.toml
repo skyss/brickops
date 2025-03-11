@@ -32,3 +32,7 @@ pythonpath = "."
     "INP001", # Not a package
     "F821",   # Do not care about undefined variables in notebooks as many are only available when running in databricks.
 ]
+
+[tool.mypy]
+disallow_untyped_defs = true
+exclude = ["tools"]
