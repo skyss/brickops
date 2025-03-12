@@ -1,9 +1,8 @@
-import logging
 from typing import Any
 
 from brickops.databricks.context import DbContext
 from brickops.databricks.username import get_username
-from brickops.datamesh.naming import parse_path
+from brickops.datamesh.parsepath import extract_jobprefix_from_path
 from brickops.dataops.deploy.buildconfig.enrichtasks import enrich_tasks
 from brickops.dataops.deploy.buildconfig.job_config import JobConfig, defaultconfig
 from brickops.gitutils import clean_branch, commit_shortref
@@ -21,21 +20,8 @@ def depname(*, db_context: DbContext, env: str, git_src: dict[str, Any]) -> str:
 
 def jobname(db_context: DbContext, depname: str) -> str:
     _nbpath = db_context.notebook_path
-    ret = parse_path(_nbpath)
-
-    if not ret:
-        msg = f"Could not parse path {_nbpath}"
-        raise RuntimeError(msg)
-
-    domain, project, flow = ret
-
-    logging.info(
-        f"""
-## Pipeline ##
-
-domain: {domain}, project: {project}, flow (pipeline): {flow}"""
-    )
-    return f"{domain}_{project}_{flow}_{depname}"
+    jobprefix = extract_jobprefix_from_path(_nbpath)
+    return f"{jobprefix}_{depname}"
 
 
 def build_job_config(

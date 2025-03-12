@@ -25,3 +25,36 @@ uv run pytest
 make start-devcontainer
 make devcontainer-shell
 ```
+
+## Configuration options for naming and mesh levels
+
+Mesh levels refers here to the granularity/depth of the repo structure, e.g. organization,domain,project,flow
+
+Default prefixing of data sets are:
+
+```
+    return os.environ.get("BRICKOPS_MESH_CATALOG_LEVELS", "domain")
+
+...
+
+    return os.environ.get("BRICKOPS_MESH_JOBPREFIX_LEVELS", "domain,project,flow")
+```
+
+You can override with the env vars above.
+
+For catalogs this means the domain section of a path is used, for jobs a combination of domain,project,flow.
+You can also specify org, if wanted. Example:
+
+
+* In the following notebook: `something/domains/sanntid/projects/testproject/flows/testflow/test_notebook`
+  * By default:
+    * catalog name: `sanntid`
+    * job name: `sanntid_testproject_testflow`
+  * With `BRICKOPS_MESH_CATALOG_LEVELS` = `domain,project`
+    * catalog name: `sanntid_testproject`
+* With org support, in the following notebook: `/Repos/test@foobar.foo/dataplatform/something/org/acme/domains/sanntid/projects/testproject/flows/testflow/test_notebook`
+  * By default:
+    * catalog name: `sanntid`
+    * job name: `sanntid_testproject_testflow`
+  * With `BRICKOPS_MESH_CATALOG_LEVELS` = `org,domain,project`
+    * catalog name: `acme_sanntid_testproject`

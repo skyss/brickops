@@ -1,13 +1,14 @@
 from __future__ import annotations
 
-import logging
-import re
 from typing import TYPE_CHECKING, Any
 
 from brickops.databricks.context import current_env, get_context
 from brickops.databricks.username import get_username
 from brickops.dataops.deploy.repo import git_source
 from brickops.gitutils import clean_branch, commit_shortref
+from brickops.datamesh.parsepath import (
+    extract_catname_from_path,
+)
 
 if TYPE_CHECKING:
     from brickops.databricks.context import DbContext
@@ -96,47 +97,20 @@ def _git_src_from_widget_params(db_context: DbContext) -> dict[str, Any]:
     return {k: v for k, v in widget_data.items() if v is not None}
 
 
-def parse_path(path: str) -> tuple[str, str, str] | None:
-    """Parse path to extract org, domain, project, and flow."""
-    ret = re.search(
-        r".*\/domains/([^/]+)\/projects\/([^/]+)\/(?:flows|explore)\/([^/]+)\/.+",
-        path,
-        re.IGNORECASE,
-    )
-    if ret is None:
-        return None
-
-    if len(ret.groups()) < 3:  # noqa: PLR2004
-        logging.warning(
-            """parse_path: unexpected number of groups.
-            Is the notebook in the correct folder!?"""
-        )
-        return None
-
-    domain = ret[1]
-    project = ret[2]
-    flow = ret[3]
-    return domain, project, flow
-
-
-def extract_catname_from_path(path: str) -> str:
-    """Derive catalog name from repo data mesh structure.
-
-    We simply use domain as base catalog name.
-    """
-    if result := parse_path(path):
-        domain, *_ = result
-        return domain
-    return ""
-
-
 def catname_from_path() -> str:
     """Derive catalog name from repo data mesh structure.
 
     We simply use domain as base catalog name.
 
+    By default we simply use domain as base catalog name.
+    If an env var BRICKOPS_MESH_LEVELS is defined, then the catalog name
+    is composed according to the elements, e.g. f"{org}_{domain}_{project}"
+
     Example path:
     .../domains/transport/projects/taxinyc/flows/prep/revenue/revenue
+
+    With org:
+    .../org/acme/domains/transport/projects/taxinyc/flows/prep/revenue/revenue
     """
     db_context = get_context()
     nb_path = db_context.notebook_path

@@ -20,6 +20,9 @@ start-devcontainer:
 	devcontainer up --workspace-folder .
 
 devcontainer-shell:
-	containerid=`docker ps | grep brickops | awk '{print $1; exit}'`
-	echo "bash into container $containerid"
-    docker exec -w /workspaces/brickops/ -it $containerid bash
+	containerid=`docker ps | grep brickops | awk '{print $$1; exit}'` && \
+	echo "bash into container $$containerid" && \
+	docker exec -w /workspaces/brickops/ -it "$$containerid" bash
+
+precommit-checks:
+	uv run pre-commit run --all-files
