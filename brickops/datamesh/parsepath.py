@@ -62,10 +62,10 @@ def _parse_jobprefix_path(path: str) -> ParsedPath | None:
 
 def _parse_path(path: str, has_org: bool) -> ParsedPath | None:
     """Parse path to extract org, domain, project, and flow."""
-    if has_org:  # Include org section if full mesh
+    if has_org:  # Include org section if required
         rexp = r".*\/org/([^/]+)\/domains/([^/]+)\/projects\/([^/]+)\/(?:flows|explore(\/ml|\/prep)?)\/([^/]+)\/.+"
     else:
-        rexp = r".*\/domains/([^/]+)\/projects\/([^/]+)\/(?:flows|explore(\/ml|\/prep)?)\/([^/]+)\/.+"
+        rexp = r".*\/domains\/([^/]+)\/projects\/([^/]+)\/(?:flows|explore(\/ml|\/prep)?)\/([^/]+)\/.+"
     re_ret = re.search(
         rexp,
         path,
@@ -114,7 +114,6 @@ def _mesh_levels(levels_str: str) -> list[str]:
 
     If no org, then we don't look for org in regexp
     """
-    levels_str = _env_mesh_catalog_levels()
     levels = levels_str.split(",")
     for level in levels:
         # if level is not alphanum, then we have an error
@@ -128,7 +127,7 @@ def _env_mesh_catalog_levels():
 
 
 def _env_mesh_jobprefix_levels():
-    return os.environ.get("BRICKOPS_MESH_JOBPREFIX_LEVELS", "domain")
+    return os.environ.get("BRICKOPS_MESH_JOBPREFIX_LEVELS", "domain,project,flow")
 
 
 def _has_catalog_org():

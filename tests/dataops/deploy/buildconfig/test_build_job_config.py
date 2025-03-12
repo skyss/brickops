@@ -105,6 +105,17 @@ def test_that_job_name_is_correct_when_in_prod_env(
     assert result.name == "test_project_flow_prod"
 
 
+def test_that_job_name_is_correct_when_in_prod_env_w_org(
+    basic_config: dict[str, Any], db_context: DbContext, monkeypatch
+) -> None:
+    monkeypatch.setenv("BRICKOPS_MESH_JOBPREFIX_LEVELS", "org,domain,project,flow")
+    db_context.username = "service_principal"
+    db_context.is_service_principal = True
+    db_context.notebook_path = "/Repos/test@vlfk.no/dp-notebooks/something/org/acme/domains/test/projects/project/flows/flow/task_key"
+    result = build_job_config(basic_config, env="prod", db_context=db_context)
+    assert result.name == "acme_test_project_flow_prod"
+
+
 def test_that_cluster_is_set_correct_in_job_config(
     basic_config: dict[str, Any], db_context: DbContext
 ) -> None:

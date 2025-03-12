@@ -1,5 +1,4 @@
 import pytest
-
 from brickops.databricks.context import DbContext
 from brickops.datamesh.naming import (
     build_table_name,
@@ -20,6 +19,11 @@ def valid_path() -> str:
 
 
 @pytest.fixture
+def valid_org_path() -> str:
+    return "something/org/acme/domains/sanntid/projects/testproject/flows/test_flow/test_notebook"
+
+
+@pytest.fixture
 def explore_path() -> str:
     return "something/domains/sanntid/projects/test_project/explore/exploration/test_notebook"
 
@@ -28,6 +32,13 @@ def test_that_starting_with_valid_path_returns_correct_catalog_name(
     valid_path: str,
 ) -> None:
     assert extract_catname_from_path(valid_path) == "sanntid"
+
+
+def test_that_starting_with_valid_path_returns_correct_catalog_name_w_org(
+    valid_org_path: str, monkeypatch
+) -> None:
+    monkeypatch.setenv("BRICKOPS_MESH_CATALOG_LEVELS", "org,domain,project")
+    assert extract_catname_from_path(valid_org_path) == "acme_sanntid_testproject"
 
 
 def test_that_containing_valid_path_in_prod_returns_correct_catalog_name_without_postfix(
@@ -62,6 +73,18 @@ def test_parse_path_supports_explore_folders() -> None:
         "/domains/sanntid/projects/test_project/explore/exploration/a_notebook",
         has_org=False,
     ) == ParsedPath(
+        domain="sanntid",
+        project="test_project",
+        flow="exploration",
+    )
+
+
+def test_parse_path_supports_explore_folders_w_org() -> None:
+    assert _parse_path(
+        "/org/acme/domains/sanntid/projects/test_project/explore/exploration/a_notebook",
+        has_org=True,
+    ) == ParsedPath(
+        org="acme",
         domain="sanntid",
         project="test_project",
         flow="exploration",

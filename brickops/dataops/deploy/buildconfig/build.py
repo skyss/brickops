@@ -1,4 +1,3 @@
-import logging
 from typing import Any
 
 from brickops.databricks.context import DbContext
@@ -21,7 +20,7 @@ def depname(*, db_context: DbContext, env: str, git_src: dict[str, Any]) -> str:
 
 def jobname(db_context: DbContext, depname: str) -> str:
     _nbpath = db_context.notebook_path
-    job_prefix = extract_jobprefix_from_path(_nbpath)
+    jobprefix = extract_jobprefix_from_path(_nbpath)
     return f"{jobprefix}_{depname}"
 
 
