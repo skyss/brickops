@@ -6,7 +6,9 @@ from brickops.databricks.context import current_env, get_context
 from brickops.databricks.username import get_username
 from brickops.dataops.deploy.repo import git_source
 from brickops.gitutils import clean_branch, commit_shortref
-from brickops.datamesh.parsepath import extract_catname_from_path
+from brickops.datamesh.parsepath import (
+    extract_catname_from_path,
+)
 
 if TYPE_CHECKING:
     from brickops.databricks.context import DbContext

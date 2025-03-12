@@ -5,7 +5,10 @@ from brickops.datamesh.naming import (
     build_table_name,
     dbname,
     extract_catname_from_path,
-    parse_path,
+)
+from brickops.datamesh.parsepath import (
+    _parse_path,
+    ParsedPath,
 )
 
 
@@ -55,13 +58,13 @@ def test_that_catalog_can_be_extracted_for_explore_folders(
 
 
 def test_parse_path_supports_explore_folders() -> None:
-    assert parse_path(
-        "/domains/sanntid/projects/test_project/explore/exploration/a_notebook"
-    ) == (
-        None,
-        "sanntid",
-        "test_project",
-        "exploration",
+    assert _parse_path(
+        "/domains/sanntid/projects/test_project/explore/exploration/a_notebook",
+        has_org=False,
+    ) == ParsedPath(
+        domain="sanntid",
+        project="test_project",
+        flow="exploration",
     )
 
 

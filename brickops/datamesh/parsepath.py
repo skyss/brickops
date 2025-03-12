@@ -7,20 +7,13 @@ from typing import Optional
 
 @dataclass
 class ParsedPath:
-    org: Optional[str] = None
-    domain: str
-    project: str
     flow: str
-    flow_type: str
+    project: str
+    domain: str
+    org: Optional[str] = None
 
 
 def extract_catname_from_path(path: str) -> str:
-    levels = _mesh_catalog_levels()
-    parsed_path = _parse_catname_path(path)
-    return extract_name_from_path(levels=levels, parsed_path=parsed_path)
-
-
-def extract_name_from_path(levels: list[str], parsed_path: ParsedPath) -> str:
     """Derive catalog name from repo data mesh structure.
 
     By default we simply use domain as base catalog name.
@@ -28,10 +21,8 @@ def extract_name_from_path(levels: list[str], parsed_path: ParsedPath) -> str:
     is composed according to the elements, e.g. f"{org}_{domain}_{project}"
     """
     levels = _mesh_catalog_levels()
-    if parsed_path := _parse_catname_path(path):
-        vals = [getattr(parsed_path, level) for level in levels]
-        return vals.join("_")
-    return ""
+    parsed_path = _parse_catalog_path(path)
+    return _extract_name_from_path(levels=levels, parsed_path=parsed_path)
 
 
 def extract_jobprefix_from_path(path: str) -> str:
@@ -41,10 +32,21 @@ def extract_jobprefix_from_path(path: str) -> str:
     If an env var BRICKOPS_MESH_JOB_LEVELS is defined, then the catalog name
     is composed according to the elements, e.g. f"{org}_{domain}_{project}"
     """
-    levels = _mesh_catalog_levels()
-    if parsed_path := _parse_catname_path(path):
+    levels = _mesh_jobprefix_levels()
+    parsed_path = _parse_jobprefix_path(path)
+    return _extract_name_from_path(levels=levels, parsed_path=parsed_path)
+
+
+def _extract_name_from_path(levels: list[str], parsed_path: ParsedPath) -> str:
+    """Derive name from repo data mesh structure.
+
+    By default we simply use domain as base catalog name.
+    If an env var like BRICKOPS_MESH_CATALOG_LEVELS is defined, then the name
+    is composed according to the elements, e.g. f"{org}_{domain}_{project}"
+    """
+    if parsed_path:
         vals = [getattr(parsed_path, level) for level in levels]
-        return vals.join("_")
+        return ("_").join(vals)
     return ""
 
 
@@ -61,9 +63,9 @@ def _parse_jobprefix_path(path: str) -> ParsedPath | None:
 def _parse_path(path: str, has_org: bool) -> ParsedPath | None:
     """Parse path to extract org, domain, project, and flow."""
     if has_org:  # Include org section if full mesh
-        rexp = r".*\/org/([^/]+)\/domains/([^/]+)\/projects\/([^/]+)\/(?:flows|explore)\/([^/]+)\/.+"
+        rexp = r".*\/org/([^/]+)\/domains/([^/]+)\/projects\/([^/]+)\/(?:flows|explore(\/ml|\/prep)?)\/([^/]+)\/.+"
     else:
-        rexp = r".*\/domains/([^/]+)\/projects\/([^/]+)\/(?:flows|explore)\/([^/]+)\/.+"
+        rexp = r".*\/domains/([^/]+)\/projects\/([^/]+)\/(?:flows|explore(\/ml|\/prep)?)\/([^/]+)\/.+"
     re_ret = re.search(
         rexp,
         path,
@@ -71,6 +73,8 @@ def _parse_path(path: str, has_org: bool) -> ParsedPath | None:
     )
     if re_ret is None:
         return None
+
+    print("parsepath.py:" + repr(70) + ":re_ret:" + repr(list(re_ret.groups())))
 
     expected_levels = 5 if has_org else 4
     if len(re_ret.groups()) < expected_levels:  # noqa: PLR2004
@@ -82,17 +86,15 @@ def _parse_path(path: str, has_org: bool) -> ParsedPath | None:
 
     if has_org:
         return ParsedPath(
-            org=re_ret[0],
-            domain=re_ret[1],
-            project=re_ret[2],
-            flowtype=re_ret[3],
-            flow=re_ret[4],
+            org=re_ret[1],
+            domain=re_ret[2],
+            project=re_ret[3],
+            flow=re_ret[5],
         )
     return ParsedPath(
-        domain=re_ret[0],
-        project=re_ret[1],
-        flowtype=re_ret[2],
-        flow=re_ret[3],
+        domain=re_ret[1],
+        project=re_ret[2],
+        flow=re_ret[4],
     )
 
 
