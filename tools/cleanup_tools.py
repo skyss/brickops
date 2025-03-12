@@ -60,12 +60,22 @@ def get_tables_for_schema(api_client: ApiClient, full_name: str) -> list[str]:
     catalog, schema = full_name.split(".")
     return [tbl["full_name"] for tbl in api_client.get_tables(catalog, schema)]
 
+def get_volumes_for_schema(api_client: ApiClient, full_name: str) -> list[str]:
+    """Find full name of all volumes in a schema."""
+    catalog, schema = full_name.split(".")
+    return [volume["full_name"] for volume in api_client.get_volumes(catalog, schema)]
 
 def delete_schema(api_client: ApiClient, full_name: str) -> None:
-    """Delete a schema including all tables in it."""
+    """Delete a schema including all tables and volumes in it."""
     if tables := get_tables_for_schema(api_client, full_name):
         for table in tables:
             logging.info(f"Deleting {table}")
             api_client.delete_table(table)
+
+    if volumes := get_volumes_for_schema(api_client, full_name):
+        for volume in volumes:
+            logging.info(f"Deleting volume: {volume}")
+            api_client.delete_volume(volume)
+
     logging.info(f"Deleting schema={full_name}")
     api_client.delete_schema(full_name)
