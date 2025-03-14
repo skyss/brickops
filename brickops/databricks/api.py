@@ -86,8 +86,14 @@ class ApiClient:
             "schemas", []
         )
 
+    def get_volumes(self: ApiClient, catalog: str, schema: str) -> list[dict[str, Any]]:
+        return self.get("unity-catalog/volumes", params={"catalog_name": catalog, "schema_name":schema}).get("volumes", [])
+
     def delete_schema(self: ApiClient, full_name: str) -> dict[str, Any]:
         return self.delete(f"unity-catalog/schemas/{full_name}")
+    
+    def delete_volume(self: ApiClient, full_name: str) -> dict[str, Any]:
+        return self.delete(f"unity-catalog/volumes/{full_name}")
 
     def get_tables(self: ApiClient, catalog: str, schema: str) -> list[dict[str, Any]]:
         return self.get(  # type: ignore [no-any-return]
@@ -161,7 +167,7 @@ class ApiClient:
         folders_response = self.get(
             "repos", version="2.0", params={"path_prefix": "/Users"}
         )
-        return repos_response.get("repos", []) + folders_response.get("repos", [])  # type: ignore [no-any-return]
+        return repos_response.get("repos", []) + folders_response.get("repos", []) # type: ignore [no-any-return]
 
     def unpack_response(self: ApiClient, response: requests.Response) -> dict[str, Any]:
         response.raise_for_status()
