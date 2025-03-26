@@ -96,6 +96,14 @@ def test_that_service_prinical_is_set__when_running_as_sp(
     }
 
 
+def test_that_jobname_is_set_taken_from_config_when_present(
+    basic_config: dict[str, Any], db_context: DbContext
+) -> None:
+    basic_config["name"] = "my_name"
+    result = build_job_config(basic_config, "prod", db_context)
+    assert result.name == "my_name_prod"
+
+
 def test_that_job_name_is_correct_when_in_prod_env(
     basic_config: dict[str, Any], db_context: DbContext
 ) -> None:
@@ -186,3 +194,4 @@ def test_that_values_from_yaml_is_set_correct_in_job_config(
         "pause_status": "UNPAUSED",
         "timezone_id": "Europe/Brussels",
     }
+    assert result.name == "my_name_test_TestUser_gitbranch_abcdefgh"

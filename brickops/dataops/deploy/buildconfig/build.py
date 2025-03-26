@@ -18,10 +18,10 @@ def depname(*, db_context: DbContext, env: str, git_src: dict[str, Any]) -> str:
     return "prod"
 
 
-def jobname(db_context: DbContext, depname: str) -> str:
-    _nbpath = db_context.notebook_path
-    jobprefix = extract_jobprefix_from_path(_nbpath)
-    return f"{jobprefix}_{depname}"
+def jobname(db_context: DbContext, depname: str, job_prefix: str = "") -> str:
+    if not job_prefix:
+        job_prefix = extract_jobprefix_from_path(db_context.notebook_path)
+    return f"{job_prefix}_{depname}"
 
 
 def build_job_config(
@@ -36,7 +36,9 @@ def build_job_config(
 
     full_cfg.update(cfg)
     dep_name = depname(db_context=db_context, env=env, git_src=full_cfg.git_source)
-    full_cfg.name = jobname(db_context, depname=dep_name)
+    full_cfg.name = jobname(
+        db_context, depname=dep_name, job_prefix=cfg.get("name", "")
+    )
     tags = _tags(cfg=cfg, depname=dep_name)
     full_cfg.tags = tags
     full_cfg.parameters.extend(build_context_parameters(env, tags))
