@@ -29,8 +29,8 @@ def autojob(
     if not env:
         env = current_env(db_context)
 
-    if env not in ("test", "prod"):
-        msg = f"env must be 'test' or 'prod', not {env}"
+    if env not in ("test", "dev", "prod"):
+        msg = f"env must be 'test', 'dev' or 'prod', not {env}"
         raise ValueError(msg)
 
     cfg = read_config_yaml(cfgyaml)
@@ -55,11 +55,11 @@ def create_or_update_job(
 ) -> dict[str, Any]:
     api_client = api.ApiClient(db_context.api_url, db_context.api_token)
     if job := api_client.get_job_by_name(job_name=job_config.name):
-        return api_client.update(
+        return api_client.update_job(
             job_id=job["job_id"], job_name=job_config.name, job_config=job_config.dict()
         )
 
-    return api_client.create(
+    return api_client.create_job(
         job_name=job_config.name,
         job_config=job_config.dict(),
     )
