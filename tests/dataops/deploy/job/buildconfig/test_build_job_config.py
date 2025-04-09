@@ -2,10 +2,12 @@ from typing import Any
 
 import pytest
 
+from unittest import mock
 from brickops.databricks.context import DbContext
 from brickops.dataops.deploy.job.buildconfig.build import build_job_config
 from brickops.dataops.deploy.job.buildconfig.job_config import JobConfig, defaultconfig
 from brickops.dataops.deploy.readconfig import read_config_yaml
+from brickops.datamesh.cfg import read_config
 
 
 @pytest.fixture
@@ -99,21 +101,25 @@ def test_that_service_prinical_is_set__when_running_as_sp(
 def test_that_job_name_is_correct_when_in_prod_env(
     basic_config: dict[str, Any], db_context: DbContext
 ) -> None:
+    read_config.cache_clear()  # Clear the cache to ensure the config is reloaded
     db_context.username = "service_principal"
     db_context.is_service_principal = True
     result = build_job_config(basic_config, env="prod", db_context=db_context)
-    assert result.name == "test_project_flow_prod"
+    assert result.name == "test_project_prod"
 
 
+@mock.patch(
+    "brickops.datamesh.cfg._find_config",
+    return_value=pytest.BRICKOPS_FULLMESH_CONFIG,  # type: ignore[attr-defined]
+)
 def test_that_job_name_is_correct_when_in_prod_env_w_org(
     basic_config: dict[str, Any], db_context: DbContext, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    monkeypatch.setenv("BRICKOPS_MESH_JOBPREFIX_LEVELS", "org,domain,project,flow")
     db_context.username = "service_principal"
     db_context.is_service_principal = True
-    db_context.notebook_path = "/Repos/test@vlfk.no/dp-notebooks/something/org/acme/domains/test/projects/project/flows/flow/task_key"
+    db_context.notebook_path = "/Repos/test@vlfk.no/dp-notebooks/something/org/acme/domains/domainfoo/projects/projectfoo/flows/prep/taskfoo"
     result = build_job_config(basic_config, env="prod", db_context=db_context)
-    assert result.name == "acme_test_project_flow_prod"
+    assert result.name == "domainfoo_projectfoo_prod"
 
 
 def test_that_cluster_is_set_correct_in_job_config(
