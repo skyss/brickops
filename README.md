@@ -4,6 +4,7 @@ DataOps framework for Databricks
 
 Table of contents:
 
+- [Getting started](#getting-started)
 - [Purpose](#purpose)
 - [Naming functions](#naming-functions)
   - [Catalog name from path: catname_from_path()](#catalog-name-from-path-catname_from_path)
@@ -16,6 +17,14 @@ Table of contents:
 - [Configuration options for naming and mesh levels](#configuration-options-for-naming-and-mesh-levels)
 - [Underlying philosophy](#underlying-philosophy)
 
+
+## Getting Started
+
+The package can be installed with pip:
+
+``````bash
+pip install brickops
+``````
 
 ## Purpose
 Brickops is a framework to automatically name Databricks assets, like Unity Catalog (UC) schemas, tables and jobs, according to environment (e.g. dev, staging, prod) and domain/project/flow names (where domain, project, flow are derived from the folder path in the repository).
