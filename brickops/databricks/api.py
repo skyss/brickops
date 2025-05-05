@@ -206,6 +206,7 @@ class ApiClient:
         version: str = "2.1",
         payload: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
+        logger.debug(f"POST {self.build_url(stub, version)}")
         return self.unpack_response(
             requests.post(
                 url=self.build_url(stub, version),
@@ -221,6 +222,7 @@ class ApiClient:
         stub: str,
         version: str = "2.1",
     ) -> dict[str, Any]:
+        logger.debug(f"DELETE {self.build_url(stub, version)}")
         return self.unpack_response(
             requests.delete(
                 self.build_url(stub, version),
@@ -236,6 +238,7 @@ class ApiClient:
         version: str = "2.1",
         params: dict[str, str] | None = None,
     ) -> dict[str, Any]:
+        logger.debug(f"GET {self.build_url(stub, version)}")
         return self.unpack_response(
             requests.get(
                 self.build_url(stub, version),
@@ -249,6 +252,7 @@ class ApiClient:
     def put(
         self: ApiClient, stub: str, payload: dict[str, Any], version: str = "2.1"
     ) -> dict[str, Any]:
+        logger.debug(f"PUT {self.build_url(stub, version)}")
         return self.unpack_response(
             requests.put(
                 url=self.build_url(stub, version),
@@ -262,6 +266,7 @@ class ApiClient:
     def patch(
         self: ApiClient, stub: str, payload: dict[str, Any], version: str = "2.1"
     ) -> dict[str, Any]:
+        logger.debug(f"PATCH {self.build_url(stub, version)}")
         return self.unpack_response(
             requests.patch(
                 url=self.build_url(stub, version),
