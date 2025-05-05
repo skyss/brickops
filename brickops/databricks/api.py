@@ -145,18 +145,18 @@ class ApiClient:
         logger.info(f"Running job: {job_id}")
         return self.post("jobs/run-now", payload={"job_id": job_id})
 
-    def update(
+    def reset_job(
         self: ApiClient, *, job_id: str, job_name: str, job_config: dict[str, Any]
     ) -> dict[str, Any]:
         logger.info(f"Resetting job: {job_name}")
         data = {"job_id": job_id, "new_settings": job_config}
-        return self.post("jobs/reset", payload=data)
+        return self.post("jobs/reset", version="2.2", payload=data)
 
-    def create(
+    def create_job(
         self: ApiClient, job_name: str, job_config: dict[str, Any]
     ) -> dict[str, Any]:
         logger.info(f"Creating job: {job_name}")
-        return self.post("jobs/create", payload=job_config)
+        return self.post("jobs/create", version="2.2", payload=job_config)
 
     def get_clusters(self: ApiClient) -> list[dict[str, Any]]:
         response = self.get("clusters/list")
@@ -206,6 +206,7 @@ class ApiClient:
         version: str = "2.1",
         payload: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
+        logger.debug(f"POST {self.build_url(stub, version)}")
         return self.unpack_response(
             requests.post(
                 url=self.build_url(stub, version),
@@ -221,6 +222,7 @@ class ApiClient:
         stub: str,
         version: str = "2.1",
     ) -> dict[str, Any]:
+        logger.debug(f"DELETE {self.build_url(stub, version)}")
         return self.unpack_response(
             requests.delete(
                 self.build_url(stub, version),
@@ -236,6 +238,7 @@ class ApiClient:
         version: str = "2.1",
         params: dict[str, str] | None = None,
     ) -> dict[str, Any]:
+        logger.debug(f"GET {self.build_url(stub, version)}")
         return self.unpack_response(
             requests.get(
                 self.build_url(stub, version),
@@ -249,6 +252,7 @@ class ApiClient:
     def put(
         self: ApiClient, stub: str, payload: dict[str, Any], version: str = "2.1"
     ) -> dict[str, Any]:
+        logger.debug(f"PUT {self.build_url(stub, version)}")
         return self.unpack_response(
             requests.put(
                 url=self.build_url(stub, version),
@@ -262,6 +266,7 @@ class ApiClient:
     def patch(
         self: ApiClient, stub: str, payload: dict[str, Any], version: str = "2.1"
     ) -> dict[str, Any]:
+        logger.debug(f"PATCH {self.build_url(stub, version)}")
         return self.unpack_response(
             requests.patch(
                 url=self.build_url(stub, version),
