@@ -16,7 +16,7 @@ class JobConfig:
     parameters: list[dict[str, Any]]
     run_as: dict[str, Any]
     git_source: dict[str, Any]
-    perfomance_target: str
+    performance_target: str
 
     def update(self, cfg: dict[str, Any]) -> None:
         """Update the job configuration with the given configuration."""
@@ -43,5 +43,5 @@ def defaultconfig() -> JobConfig:
         parameters=[],
         run_as={},
         git_source={},
-        perfomance_target="STANDARD",
+        performance_target="STANDARD",
     )

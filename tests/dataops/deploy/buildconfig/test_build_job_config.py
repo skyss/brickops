@@ -54,7 +54,7 @@ def test_that_default_config_converts_correctly_to_dict() -> None:
         "run_as": {},
         "tags": {},
         "tasks": [],
-        "perfomance_target": "STANDARD",
+        "performance_target": "STANDARD",
     }
 
 
