@@ -145,18 +145,18 @@ class ApiClient:
         logger.info(f"Running job: {job_id}")
         return self.post("jobs/run-now", payload={"job_id": job_id})
 
-    def update(
+    def reset_job(
         self: ApiClient, *, job_id: str, job_name: str, job_config: dict[str, Any]
     ) -> dict[str, Any]:
         logger.info(f"Resetting job: {job_name}")
         data = {"job_id": job_id, "new_settings": job_config}
-        return self.post("jobs/reset", payload=data)
+        return self.post("jobs/reset", version="2.2", payload=data)
 
-    def create(
+    def create_job(
         self: ApiClient, job_name: str, job_config: dict[str, Any]
     ) -> dict[str, Any]:
         logger.info(f"Creating job: {job_name}")
-        return self.post("jobs/create", payload=job_config)
+        return self.post("jobs/create", version="2.2", payload=job_config)
 
     def get_clusters(self: ApiClient) -> list[dict[str, Any]]:
         response = self.get("clusters/list")

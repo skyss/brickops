@@ -15,7 +15,7 @@ def db_context() -> DbContext:
 
 @pytest.mark.parametrize("env", ["invalid", "dev"])
 def test_that_autojob_throws_with_invalid_env(
-    env: str, db_context, monkeypatch
+    env: str, db_context: DbContext, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setattr(
         "brickops.dataops.deploy.autojob.get_context", lambda: db_context
