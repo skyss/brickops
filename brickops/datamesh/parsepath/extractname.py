@@ -22,6 +22,7 @@ def extract_name_from_path(
     resource: str,
     pipeline_context: PipelineContext,
     resource_name: str | None = None,
+    naming_overrides: dict[str, str] = {},
 ) -> str:
     naming_config = _get_naming_config(resource=resource, env=pipeline_context.env)
     parsed_path = parsepath(path)
@@ -33,6 +34,7 @@ def extract_name_from_path(
         pipeline_context=pipeline_context,
         resource=resource,
         resource_name=resource_name,
+        naming_overrides=naming_overrides,
     )
 
 
@@ -42,6 +44,7 @@ def _compose_name(
     pipeline_context: PipelineContext,
     resource: str,
     resource_name: str | None,
+    naming_overrides: dict[str, str] = {},
 ) -> str:
     """Compose the name based on the provided naming_config and parsed path.
 
@@ -61,7 +64,8 @@ def _compose_name(
         "gitshortref": pipeline_context.gitshortref,
         resource: resource_name,
     }
-    logger.info("extractname.py:" + repr(61) + ":naming_config:" + repr(naming_config))
+    format_dict.update(naming_overrides)
+    logger.info(f"{naming_config=}")
     # Replace the variables in the template with actual values
     return naming_config.format(**format_dict)
 

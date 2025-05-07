@@ -165,7 +165,9 @@ def catname_from_path(
     )
 
 
-def jobname(db_context: DbContext, env: str) -> str:
+def jobname(
+    db_context: DbContext, env: str, naming_overrides: dict[str, str] = {}
+) -> str:
     """Derive job name from repo data mesh structure.
 
     The naming config defines how the job name is composed
@@ -189,6 +191,7 @@ def jobname(db_context: DbContext, env: str) -> str:
             path=nb_path,
             resource="job",
             pipeline_context=pipeline_context,
+            naming_overrides=naming_overrides,
         )
     )
 

@@ -29,7 +29,11 @@ def build_job_config(
         full_cfg.email_notifications = {}
 
     full_cfg.update(cfg)
-    full_cfg.name = jobname(db_context, env=env)
+    full_cfg.name = jobname(
+        db_context,
+        env=env,
+        naming_overrides={"project": str(cfg.get("name"))} if "name" in cfg else {},
+    )
     dep_name = depname(db_context=db_context, env=env, git_src=full_cfg.git_source)
     tags = _tags(cfg=cfg, depname=dep_name)
     full_cfg.tags = tags

@@ -13,7 +13,7 @@ def db_context() -> DbContext:
     )
 
 
-@pytest.mark.parametrize("env", ["invalid", "dev"])
+@pytest.mark.parametrize("env", ["invalid", "non-env"])
 def test_that_autojob_throws_with_invalid_env(
     env: str, db_context: DbContext, monkeypatch: pytest.MonkeyPatch
 ) -> None:
