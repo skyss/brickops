@@ -110,7 +110,9 @@ class ApiClient:
         ).get("tables", [])
 
     def get_dashboards(self: ApiClient) -> list[dict[str, Any]]:
-        return self.get("lakeview/dashboards", version="2.0").get("dashboards", [])  # type: ignore [no-any-return]
+        return self.get(  # type: ignore [no-any-return]
+            "lakeview/dashboards", version="2.0", params={"page_size": "1000"}
+        ).get("dashboards", [])
 
     def patch_permissions(
         self: ApiClient,
