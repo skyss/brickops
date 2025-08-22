@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import inspect
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 from typing import TYPE_CHECKING
+import logging
 
+logger = logging.getLogger()
 if TYPE_CHECKING:
     from pyspark.sql.session import SparkSession
 
@@ -30,7 +32,10 @@ def current_env(db_context: DbContext | None = None) -> str:
 
 def get_context(dbutils: dbutils_type | None = None) -> DbContext:
     if dbutils is None:
+        logger.info("retrieving dbutils")
         dbutils = get_dbutils()
+    context = _convert_to_data(dbutils)
+    logger.info(asdict(context))
     return _convert_to_data(dbutils)
 
 

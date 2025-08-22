@@ -6,6 +6,9 @@ from brickops.datamesh.parsepath import extract_jobprefix_from_path
 from brickops.dataops.deploy.buildconfig.enrichtasks import enrich_tasks
 from brickops.dataops.deploy.buildconfig.job_config import JobConfig, defaultconfig
 from brickops.gitutils import clean_branch, commit_shortref
+import logging
+
+logger = logging.getLogger()
 
 
 def depname(*, db_context: DbContext, env: str, git_src: dict[str, Any]) -> str:
@@ -20,6 +23,9 @@ def depname(*, db_context: DbContext, env: str, git_src: dict[str, Any]) -> str:
 
 def jobname(db_context: DbContext, depname: str, job_prefix: str = "") -> str:
     if not job_prefix:
+        logger.info(
+            f"Attempting to extract prefix from path {db_context.notebook_path}"
+        )
         job_prefix = extract_jobprefix_from_path(db_context.notebook_path)
     return f"{job_prefix}_{depname}"
 
