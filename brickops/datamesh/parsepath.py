@@ -74,6 +74,7 @@ def _parse_path(path: str, has_org: bool) -> ParsedPath | None:
         re.IGNORECASE,
     )
     if re_ret is None:
+        logger.info(f"Failed to parse path: {path}")
         return None
 
     expected_levels = 5 if has_org else 4
