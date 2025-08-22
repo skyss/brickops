@@ -4,6 +4,7 @@ import inspect
 from dataclasses import dataclass, field, asdict
 from typing import TYPE_CHECKING
 import logging
+import os
 
 logger = logging.getLogger()
 if TYPE_CHECKING:
@@ -85,7 +86,7 @@ def _convert_to_data(dbutils: dbutils_type) -> DbContext:
     return DbContext(
         api_url=ctx.apiUrl().get(),
         api_token=ctx.apiToken().get(),
-        notebook_path=ctx.notebookPath().get(),
+        notebook_path=os.getcwd(),
         username=str(ctx.userName().get()),
         widgets=dbutils.widgets.getAll(),  # type: ignore [attr-defined]
     )
